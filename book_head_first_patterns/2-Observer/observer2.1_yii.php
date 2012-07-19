@@ -22,7 +22,8 @@ include "/home/maxlord/public_html/qnits/yiiapp.php";
  * Наш наблюдатель
  * Который хочет чтобы ему сообщали об изменениях в наблюдаемом объекте.
  */
-interface Observer21 {
+interface Observer21
+{
     /**
      * @param Subject21 $subject
      * @return void
@@ -46,7 +47,8 @@ interface Observer21 {
 /**
  * Общая часть от нескольких наших наблюдателей. Но могут быть и другие.
  */
-interface DisplayElement21{
+interface DisplayElement21
+{
     /**
      * @abstract
      * @return void
@@ -58,7 +60,8 @@ interface DisplayElement21{
  * Наш наблюдаемый субъект
  * При изменении Measurements, он сообщает об этом наблюдателям, которых может быть много.
  */
-interface Subject21{
+interface Subject21
+{
 
     /**
      * @desc технический момент,
@@ -90,7 +93,8 @@ interface Subject21{
  * Наш наблюдаемый субъект
  * При изменении Measurements, он сообщает об этом наблюдателям, которых может быть много.
  */
-class WeatherData21 extends CModel{
+class WeatherData21 extends CModel
+{
     /**
      * @var float $temperature
      */
@@ -104,7 +108,8 @@ class WeatherData21 extends CModel{
      */
     public $pressure;
 
-	public function attributeNames(){
+    public function attributeNames()
+    {
         array();
     }
 
@@ -115,7 +120,8 @@ class WeatherData21 extends CModel{
      * @param $event
      * @return void
      */
-    public function onMeasurementsChanged($event){
+    public function onMeasurementsChanged($event)
+    {
         $this->raiseEvent('onMeasurementsChanged', $event);
     }
 
@@ -123,11 +129,12 @@ class WeatherData21 extends CModel{
      * @desc наблюдаемое событие, о котором надо оповещать.
      * @return void
      */
-    public function measurementsChanged(){
+    public function measurementsChanged()
+    {
         /*
          * событие произошло, вызываем все действия, которые наблюдатели просили вызвать
          */
-        if($this->hasEventHandler('onMeasurementsChanged')){
+        if ($this->hasEventHandler('onMeasurementsChanged')) {
             $event = new CModelEvent($this);
             $this->onMeasurementsChanged($event);
         }
@@ -140,10 +147,11 @@ class WeatherData21 extends CModel{
      * @param float $pressure
      * @return void
      */
-    public function setMeasurements($temperature, $humidity, $pressure){
-        $this->temperature=$temperature;
-        $this->humidity=$humidity;
-        $this->pressure=$pressure;
+    public function setMeasurements($temperature, $humidity, $pressure)
+    {
+        $this->temperature = $temperature;
+        $this->humidity = $humidity;
+        $this->pressure = $pressure;
         $this->measurementsChanged();
     }
 
@@ -154,7 +162,8 @@ class WeatherData21 extends CModel{
  * Наш наблюдатель 1
  * Который хочет чтобы ему сообщали об изменениях в наблюдаемом объекте.
  */
-class Display1_21 implements Observer21, DisplayElement21 {
+class Display1_21 implements Observer21, DisplayElement21
+{
     /**
      * @var float $temperature
      */
@@ -172,7 +181,8 @@ class Display1_21 implements Observer21, DisplayElement21 {
      * @param Subject $subject
      * @return void
      */
-    public function observeWeather($subject){
+    public function observeWeather($subject)
+    {
         /*
          * Наблюдатель говорит - когда у наблюдаемого произойдет такое-то событие, вызовите мой метод update и update2
          */
@@ -184,41 +194,47 @@ class Display1_21 implements Observer21, DisplayElement21 {
      * @param Subject $subject
      * @return void
      */
-    public function stopObservingWeather($subject){
+    public function stopObservingWeather($subject)
+    {
         /*
          * Наблюдатель говорит - когда у наблюдаемого произойдет такое-то событие, не надо вызывать мой метод update и update2
          * Этоn способ не срабатывает, если мы пытаемся удалиться в процессе выполнения обработчиков onMeasurementsChanged! - сбивается итератор обработчиков.
          */
-        echo "<br/> Dispay1 Detach observer handler method update: ".$subject->detachEventHandler('onMeasurementsChanged',array($this, 'update'));
-        echo "<br/> Dispay1 Detach observer handler method update2: ".$subject->detachEventHandler('onMeasurementsChanged',array($this, 'update2'));
+        echo "<br/> Dispay1 Detach observer handler method update: " . $subject->detachEventHandler('onMeasurementsChanged', array($this, 'update'));
+        echo "<br/> Dispay1 Detach observer handler method update2: " . $subject->detachEventHandler('onMeasurementsChanged', array($this, 'update2'));
         // можно отключить даже обработчики других наблюдателей:
         //$subject->getEventHandlers('onMeasurementsChanged')->clear();
     }
 
 
-    public function update($event){
-        $subject=$event->sender;
-        $this->temperature=$subject->temperature;
-        $this->humidity=$subject->humidity;
-        $this->pressure=$subject->pressure;
+    public function update($event)
+    {
+        $subject = $event->sender;
+        $this->temperature = $subject->temperature;
+        $this->humidity = $subject->humidity;
+        $this->pressure = $subject->pressure;
         $this->display();
     }
 
-    public function update2($event){
-        $subject=$event->sender;
+    public function update2($event)
+    {
+        $subject = $event->sender;
         echo "<br/> update 2, Whoa!";
         //var_dump($user); exit;
     }
 
-    public function display(){
+    public function display()
+    {
         echo("<br/>Dispay1 Current conditions: $this->temperature, F degrees and $this->humidity% humidity");
     }
 }
+
 /**
  * Наш наблюдатель 2
  * Который хочет чтобы ему сообщали об изменениях в наблюдаемом объекте.
  */
-class Display2_21 implements Observer21, DisplayElement21 {
+class Display2_21 implements Observer21, DisplayElement21
+{
     /**
      * @var float $temperature
      */
@@ -236,7 +252,8 @@ class Display2_21 implements Observer21, DisplayElement21 {
      * @param Subject $subject
      * @return void
      */
-    public function observeWeather($subject){
+    public function observeWeather($subject)
+    {
         /*
          * Наблюдатель говорит - когда у наблюдаемого произойдет такое-то событие, вызовите мой метод update и update2
          */
@@ -248,40 +265,46 @@ class Display2_21 implements Observer21, DisplayElement21 {
      * @param Subject $subject
      * @return void
      */
-    public function stopObservingWeather($subject){
+    public function stopObservingWeather($subject)
+    {
         /*
          * Наблюдатель говорит - когда у наблюдаемого произойдет такое-то событие, не надо вызывать мой метод update и update2
          */
-        echo "<br/> Dispay2 Detach observer handler method update: ".$subject->detachEventHandler('onMeasurementsChanged',array($this, 'update'));
-        echo "<br/> Dispay2 Detach observer handler method update2: ".$subject->detachEventHandler('onMeasurementsChanged',array($this, 'update2'));
+        echo "<br/> Dispay2 Detach observer handler method update: " . $subject->detachEventHandler('onMeasurementsChanged', array($this, 'update'));
+        echo "<br/> Dispay2 Detach observer handler method update2: " . $subject->detachEventHandler('onMeasurementsChanged', array($this, 'update2'));
         // можно отключить даже обработчики других наблюдателей:
         //$subject->getEventHandlers('onMeasurementsChanged')->clear();
     }
 
 
-    public function update($event){
-        $subject=$event->sender;
-        $this->temperature=$subject->temperature;
-        $this->humidity=$subject->humidity;
-        $this->pressure=$subject->pressure;
+    public function update($event)
+    {
+        $subject = $event->sender;
+        $this->temperature = $subject->temperature;
+        $this->humidity = $subject->humidity;
+        $this->pressure = $subject->pressure;
         $this->display();
     }
 
-    public function update2($event){
-        $subject=$event->sender;
+    public function update2($event)
+    {
+        $subject = $event->sender;
         echo "<br/> update 2, Whoa!";
         //var_dump($user); exit;
     }
 
-    public function display(){
+    public function display()
+    {
         echo("<br/>Dispay2 Current conditions: $this->temperature, F degrees and $this->humidity% humidity");
     }
 }
+
 /**
  * Наш наблюдатель 3
  * Который хочет чтобы ему сообщали об изменениях в наблюдаемом объекте.
  */
-class Display3_21 implements Observer21, DisplayElement21 {
+class Display3_21 implements Observer21, DisplayElement21
+{
     /**
      * @var float $temperature
      */
@@ -299,7 +322,8 @@ class Display3_21 implements Observer21, DisplayElement21 {
      * @param Subject $subject
      * @return void
      */
-    public function observeWeather($subject){
+    public function observeWeather($subject)
+    {
         /*
          * Наблюдатель говорит - когда у наблюдаемого произойдет такое-то событие, вызовите мой метод update и update2
          */
@@ -311,40 +335,45 @@ class Display3_21 implements Observer21, DisplayElement21 {
      * @param Subject $subject
      * @return void
      */
-    public function stopObservingWeather($subject){
+    public function stopObservingWeather($subject)
+    {
         /*
          * Наблюдатель говорит - когда у наблюдаемого произойдет такое-то событие, не надо вызывать мой метод update и update2
          */
-        echo "<br/> Dispay3 Detach observer handler method update: ".$subject->detachEventHandler('onMeasurementsChanged',array($this, 'update'));
-        echo "<br/> Dispay3 Detach observer handler method update2: ".$subject->detachEventHandler('onMeasurementsChanged',array($this, 'update2'));
+        echo "<br/> Dispay3 Detach observer handler method update: " . $subject->detachEventHandler('onMeasurementsChanged', array($this, 'update'));
+        echo "<br/> Dispay3 Detach observer handler method update2: " . $subject->detachEventHandler('onMeasurementsChanged', array($this, 'update2'));
         // можно отключить даже обработчики других наблюдателей:
         //$subject->getEventHandlers('onMeasurementsChanged')->clear();
     }
 
 
-    public function update($event){
-        $subject=$event->sender;
-        $this->temperature=$subject->temperature;
-        $this->humidity=$subject->humidity;
-        $this->pressure=$subject->pressure;
+    public function update($event)
+    {
+        $subject = $event->sender;
+        $this->temperature = $subject->temperature;
+        $this->humidity = $subject->humidity;
+        $this->pressure = $subject->pressure;
         $this->display();
     }
 
-    public function update2($event){
-        $subject=$event->sender;
+    public function update2($event)
+    {
+        $subject = $event->sender;
         echo "<br/> update 2, Whoa!";
         //var_dump($user); exit;
     }
 
-    public function display(){
+    public function display()
+    {
         echo("<br/>Dispay3 Current conditions: $this->temperature, F degrees and $this->humidity% humidity");
     }
 }
 
 
-
-class WeatherStation21{
-    function __construct(){
+class WeatherStation21
+{
+    function __construct()
+    {
         $weatherData = new WeatherData21();
         $display1 = new Display1_21();
         $display1->observeWeather($weatherData);
@@ -354,14 +383,14 @@ class WeatherStation21{
         $display3->observeWeather($weatherData);
         //$statisticsDisplay = new StatisticsDisplay($weatherData);
         //$forecastDisplay = new ForecastDisplay($weatherData);
-        $weatherData->setMeasurements(10,20,10);
+        $weatherData->setMeasurements(10, 20, 10);
         $display1->stopObservingWeather($weatherData);
-        $weatherData->setMeasurements(20,20,20);
+        $weatherData->setMeasurements(20, 20, 20);
         $display1->observeWeather($weatherData);
-        $weatherData->setMeasurements(30,20,30);
+        $weatherData->setMeasurements(30, 20, 30);
     }
 }
 
 
 // Whoa!
-$station=new WeatherStation21();
+$station = new WeatherStation21();
