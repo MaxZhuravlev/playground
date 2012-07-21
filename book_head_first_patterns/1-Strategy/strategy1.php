@@ -140,8 +140,12 @@ class DuckRubber extends Duck
 $mullard = new DuckMallard();
 $mullard->performFly();
 $mullard->performQuack();
+
 $rubber = new DuckRubber();
 $rubber->performFly();
 $rubber->performQuack();
+
+$rubber->setFlyBehavior(new FlyWithWings());
+$rubber->performFly();
 
 
