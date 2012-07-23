@@ -47,9 +47,12 @@ class Singleton
 
     public function doAction()
     {
-
+        echo ' Я уникален!';
     }
 }
 
 // применение
+Singleton::getInstance()->doAction();
+Singleton::getInstance()->doAction();
+Singleton::getInstance()->doAction();
 Singleton::getInstance()->doAction();
