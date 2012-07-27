@@ -10,8 +10,9 @@ class AdapterClient
 {
     public function __construct()
     {
-        $adapter = new AdapterAdapter();
-        $adapter->request();
+        /** @var $target AdapterTargetInterface */
+        $target = new AdapterAdapter();
+        $target->request();
     }
 }
 
