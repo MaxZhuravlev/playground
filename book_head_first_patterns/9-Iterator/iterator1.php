@@ -136,7 +136,15 @@ class ConcreteIterator1 implements IIterator
 
     public function remove()
     {
-        unset($this->items[$this->position]);
+        if ($this->position <= 0) {
+            throw new CException('Нельзя вызывать remove до вызова хотя бы одного next()');
+        }
+        if ($this->items[$this->position - 1] != null) {
+            for ($i = $this->position - 1; $i < count($this->items); $i++) {
+                $this->items[$i] = $this->items[$i + 1];
+            }
+            $this->items[count($this->items) - 1] = null;
+        }
     }
 }
 
