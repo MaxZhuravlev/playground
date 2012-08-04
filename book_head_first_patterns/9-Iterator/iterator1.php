@@ -31,35 +31,169 @@ interface IAggregate
  */
 interface IIterator
 {
+    /**
+     * @abstract
+     * @return boolean есть ли следующий элемент в коллекции
+     */
     public function hasNext();
 
+    /**
+     * @abstract
+     * @return mixed следующий элемент массива
+     */
     public function next();
 
+    /**
+     * Удаляет текущий элемент коллекции
+     * @abstract
+     * @return void
+     */
     public function remove();
 }
 
-class ConcreteAggregate implements IAggregate
+/**
+ * В моём примере обе коллекции используют одинаковый итератор - итератор массива.
+ */
+class ConcreteAggregate1 implements IAggregate
 {
+    /**
+     * @var Item[] $items
+     */
+    public $items = array();
+
+    public function __construct()
+    {
+        $this->items = array(
+            new Item(1, 2),
+            new Item(1, 2),
+            new Item(1, 2),
+        );
+    }
+
     public function createIterator()
     {
-
+        return new ConcreteIterator1($this->items);
     }
 }
 
-class ConcreteIterator implements IIterator
+class ConcreteAggregate2 implements IAggregate
 {
+    /**
+     * @var Item[] $items
+     */
+    public $items = array();
+
+    public function __construct()
+    {
+        $this->items = array(
+            new Item(2, 3),
+            new Item(2, 3),
+            new Item(2, 3),
+        );
+    }
+
+    public function createIterator()
+    {
+        return new ConcreteIterator1($this->items);
+    }
+}
+
+class ConcreteIterator1 implements IIterator
+{
+    /**
+     * @var Item[] $items
+     */
+    protected $items = array();
+
+    /**
+     * @var int $position хранит текущую позицию перебора в массиве
+     */
+    public $position = 0;
+
+    /**
+     * @param $items массив объектов, для перебора которых создается итератор
+     */
+    public function __construct($items)
+    {
+        $this->items = $items;
+    }
+
     public function hasNext()
     {
-
+        if ($this->position >= count($this->items) || count($this->items) == 0) {
+            return (false);
+        } else {
+            return (true);
+        }
     }
 
     public function next()
     {
-
+        $menuItem = $this->items[$this->position];
+        $this->position++;
+        return ($menuItem);
     }
 
     public function remove()
     {
-
+        unset($this->items[$this->position]);
     }
 }
+
+class Client
+{
+    /**
+     * @var ConcreteAggregate1 $aggregate1
+     */
+    public $aggregate1;
+    /**
+     * @var ConcreteAggregate2 $aggregate2
+     */
+    public $aggregate2;
+
+    public function __construct($aggregate1, $aggregate2)
+    {
+        $this->aggregate1 = $aggregate1;
+        $this->aggregate2 = $aggregate2;
+    }
+
+    public function printAggregatesItems()
+    {
+        $iterator1 = $this->aggregate1->createIterator();
+        echo "\n First";
+        $this->printIteratorItems($iterator1);
+
+        $iterator2 = $this->aggregate2->createIterator();
+        echo "\n\n Second";
+        $this->printIteratorItems($iterator2);
+    }
+
+    /**
+     * @param $iterator IIterator
+     */
+    private function printIteratorItems($iterator)
+    {
+        while ($iterator->hasNext()) {
+            $item = $iterator->next();
+            echo "\n $item->name $item->price $item->description";
+        }
+    }
+}
+
+class Item
+{
+    public $price;
+    public $name;
+    public $description;
+
+    public function __construct($name, $price, $description = '')
+    {
+        $this->name = $name;
+        $this->price = $price;
+        $this->description = $description;
+    }
+}
+
+
+$runner = new Client(new ConcreteAggregate1(), new ConcreteAggregate2());
+$runner->printAggregatesItems();
