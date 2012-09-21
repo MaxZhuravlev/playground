@@ -1,14 +1,10 @@
 <?php
 /**
  * Created by Max Zhuravlev
- * Date: 9/17/12
- * Time: 10:22 AM
- *
- * То же самое, но короче.
- * Использует PHP ArrayObject
+ * Date: 9/19/12
+ * Time: 9:31 AM
  */
-
-namespace composite2 {
+namespace compositeIterator2 {
     /**
      * Клиент использует интерфейс AComponent для работы с объектами.
      * Интерфейс AComponent определяет интерфейс для всех компонентов: как комбинаций, так и листовых узлов.
@@ -16,6 +12,10 @@ namespace composite2 {
      */
     abstract class AComponent
     {
+
+        public $customPropertyName;
+
+        public $customPropertyDescription;
 
         /**
          * @param AComponent $component
@@ -41,6 +41,11 @@ namespace composite2 {
             throw new \Exception("Unsupported operation");
         }
 
+        /**
+         * @return  IPhpLikeIterator
+         */
+        abstract function createIterator();
+
         public function operation1()
         {
             throw new \Exception("Unsupported operation");
@@ -55,20 +60,43 @@ namespace composite2 {
      */
     class Leaf extends AComponent
     {
-
-        public $customPropertyName;
-
-        public $customPropertyDescription;
-
         public function __construct($name, $description = '')
         {
             $this->customPropertyName = $name;
             $this->customPropertyDescription = $description;
         }
 
+        public function createIterator()
+        {
+            return new NullIterator();
+        }
+
         public function operation1()
         {
             echo ("\n I'am leaf {$this->customPropertyName}, i don't want to do operation 1. {$this->customPropertyDescription}");
+        }
+    }
+
+    class NullIterator implements IPhpLikeIterator
+    {
+        public function valid()
+        {
+            return (false);
+        }
+
+        public function next()
+        {
+            return (false);
+        }
+
+        public function current()
+        {
+            return (null);
+        }
+
+        public function remove()
+        {
+            throw new \CException('unsupported operation');
         }
     }
 
@@ -80,14 +108,12 @@ namespace composite2 {
     class Composite extends AComponent
     {
 
+        private $_iterator = null;
+
         /**
          * @var \ArrayObject AComponent[] $components для хранения потомков типа AComponent
          */
         public $components = null;
-
-        public $customPropertyName;
-
-        public $customPropertyDescription;
 
         public function __construct($name, $description = '')
         {
@@ -103,7 +129,7 @@ namespace composite2 {
             if (is_null($this->components)) {
                 $this->components = new \ArrayObject;
             }
-            $this->components[] = $component;
+            $this->components->append($component);
         }
 
         public function remove($component)
@@ -132,6 +158,114 @@ namespace composite2 {
                 $iterator->next();
             }
         }
+
+        /**
+         * @return CompositeIterator
+         */
+        public function createIterator()
+        {
+            if (is_null($this->_iterator)) {
+                $this->_iterator = new CompositeIterator($this->components->getIterator());
+            }
+            return ($this->_iterator);
+        }
+    }
+
+    /**
+     *  Рекурсивный итератор компоновщика
+     */
+    class CompositeIterator implements IPhpLikeIterator
+    {
+
+        public $stack = array();
+
+        /**
+         * @param \ArrayIterator $componentsIterator
+         */
+        public function __construct($componentsIterator)
+        {
+            //$this->stack= new \ArrayObject;
+            $this->stack[] = $componentsIterator;
+        }
+
+        public function remove()
+        {
+            throw new \CException('unsupported operation');
+        }
+
+        public function valid()
+        {
+            if (empty($this->stack)) {
+                return (false);
+            } else {
+                /** @var $componentsIterator \ArrayIterator */
+                // берём первый элемент
+                $componentsIterator = array_shift(array_values($this->stack));
+                if ($componentsIterator->valid()) {
+                    return (true);
+                } else {
+                    array_shift($this->stack);
+                    return ($this->valid());
+                }
+            }
+        }
+
+        public function next()
+        {
+            /** @var $componentsIterator \ArrayIterator */
+            $componentsIterator = current($this->stack);
+            $component = $componentsIterator->current();
+            if ($component instanceof Composite) {
+                array_push($this->stack, $component->createIterator());
+            }
+            $componentsIterator->next();
+            //return($component);
+        }
+
+        public function current()
+        {
+            if ($this->valid()) {
+                /** @var $componentsIterator \ArrayIterator */
+                // берём первый элемент
+                $componentsIterator = array_shift(array_values($this->stack));
+                return ($componentsIterator->current());
+            } else {
+                return (null);
+            }
+        }
+    }
+
+    /**
+     * Интерфейс Iterator должен быть реализован всеми итераторами.
+     * Данный интерфейс явялется частью интерфейса стандартного php итератора.
+     * Конкретный Iterator отвечает за управление текущей позицией перебора в конкретной коллекции.
+     */
+    interface IPhpLikeIterator
+    {
+        /**
+         * @abstract
+         * @return boolean есть ли текущий элемент
+         */
+        public function valid();
+
+        /**
+         * @abstract
+         * @return mixed перевести курсор дальше
+         */
+        public function next();
+
+        /**
+         * @abstract
+         * @return mixed получить текущий элемент
+         */
+        public function current();
+
+        /**
+         * удалить текущий элемент коллекции
+         * @abstract
+         * @return void
+         */
+        public function remove();
     }
 
 
@@ -150,6 +284,20 @@ namespace composite2 {
         public function printOperation1()
         {
             $this->topItem->operation1();
+        }
+
+        public function printOperation2()
+        {
+            echo "\n\n\n";
+            $iterator = $this->topItem->createIterator();
+            while ($iterator->valid()) {
+                /** @var $component AComponent */
+                $component = $iterator->current();
+                if (strstr($component->customPropertyName, 'leaf1')) {
+                    echo ("\n I'm Client, I found leaf {$component->customPropertyName}, I'll just leave it here (for my 'first-leafs' tea collection). {$component->customPropertyDescription}");
+                }
+                $iterator->next();
+            }
         }
     }
 
@@ -179,6 +327,7 @@ namespace composite2 {
 
             $client = new Client($topItem);
             $client->printOperation1();
+            $client->printOperation2();
         }
     }
 

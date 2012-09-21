@@ -22,7 +22,7 @@ namespace composite1 {
          */
         public function add($component)
         {
-            throw new CException("Unsupported operation");
+            throw new \Exception("Unsupported operation");
         }
 
         /**
@@ -30,7 +30,7 @@ namespace composite1 {
          */
         public function remove($component)
         {
-            throw new CException("Unsupported operation");
+            throw new \Exception("Unsupported operation");
         }
 
         /**
@@ -38,12 +38,12 @@ namespace composite1 {
          */
         public function getChild($int)
         {
-            throw new CException("Unsupported operation");
+            throw new \Exception("Unsupported operation");
         }
 
         public function operation1()
         {
-            throw new CException("Unsupported operation");
+            throw new \Exception("Unsupported operation");
         }
 
         abstract function createIterator();
@@ -224,7 +224,7 @@ namespace composite1 {
         public function remove()
         {
             if ($this->position <= 0) {
-                throw new CException('Нельзя вызывать remove до вызова хотя бы одного next()');
+                throw new \Exception('Нельзя вызывать remove до вызова хотя бы одного next()');
             }
             if ($this->items[$this->position - 1] != null) {
                 for ($i = $this->position - 1; $i < count($this->items); $i++) {
@@ -267,7 +267,7 @@ namespace composite1 {
 
         public function remove()
         {
-            throw new CException('Нельзя');
+            throw new \Exception('Нельзя');
         }
     }
 

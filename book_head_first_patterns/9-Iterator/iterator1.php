@@ -138,7 +138,7 @@ namespace iterator1 {
         public function remove()
         {
             if ($this->position <= 0) {
-                throw new CException('Нельзя вызывать remove до вызова хотя бы одного next()');
+                throw new \Exception('Нельзя вызывать remove до вызова хотя бы одного next()');
             }
             if ($this->items[$this->position - 1] != null) {
                 for ($i = $this->position - 1; $i < count($this->items); $i++) {

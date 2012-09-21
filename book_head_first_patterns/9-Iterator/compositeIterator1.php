@@ -22,7 +22,7 @@ namespace compositeIterator {
          */
         public function add($component)
         {
-            throw new CException("Unsupported operation");
+            throw new \Exception("Unsupported operation");
         }
 
         /**
@@ -30,7 +30,7 @@ namespace compositeIterator {
          */
         public function remove($component)
         {
-            throw new CException("Unsupported operation");
+            throw new \Exception("Unsupported operation");
         }
 
         /**
@@ -38,12 +38,12 @@ namespace compositeIterator {
          */
         public function getChild($int)
         {
-            throw new CException("Unsupported operation");
+            throw new \Exception("Unsupported operation");
         }
 
         public function operation1()
         {
-            throw new CException("Unsupported operation");
+            throw new \Exception("Unsupported operation");
         }
 
         /**
@@ -118,7 +118,7 @@ namespace compositeIterator {
 
         public function remove($component)
         {
-            throw new CException("unsupported");
+            throw new \Exception("unsupported");
         }
 
         public function getChild($int)
@@ -230,7 +230,7 @@ namespace compositeIterator {
         public function remove()
         {
             if ($this->position <= 0) {
-                throw new CException('Нельзя вызывать remove до вызова хотя бы одного next()');
+                throw new \Exception('Нельзя вызывать remove до вызова хотя бы одного next()');
             }
             if ($this->items[$this->position - 1] != null) {
                 for ($i = $this->position - 1; $i < count($this->items); $i++) {
@@ -294,7 +294,7 @@ namespace compositeIterator {
 
         public function remove()
         {
-            throw new CException('Unsupported operation');
+            throw new \Exception('Unsupported operation');
         }
     }
 
@@ -330,7 +330,7 @@ namespace compositeIterator {
 
         public function remove()
         {
-            throw new CException('Нельзя');
+            throw new \Exception('Нельзя');
         }
     }
 
