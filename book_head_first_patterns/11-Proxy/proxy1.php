@@ -11,6 +11,31 @@
 
 namespace proxy1 {
 
+    $c = new Client();
+
+    class Client
+    {
+        public function __construct()
+        {
+            $image1 = new RealSubject('image1');
+            $image2 = new RealSubject('image2');
+
+            $image1->displayImage();
+            $image1->displayImage();
+            $image1->displayImage();
+            $image2->displayImage();
+
+            echo "\n\n Same thing, using proxy";
+            $image1 = new ProxySubject('image1');
+            $image2 = new ProxySubject('image2');
+
+            $image1->displayImage();
+            $image1->displayImage();
+            $image1->displayImage();
+            $image2->displayImage();
+        }
+    }
+
     interface Subject
     {
         public function displayImage();
@@ -58,30 +83,4 @@ namespace proxy1 {
             $this->_realSubject->displayImage();
         }
     }
-
-    class Client
-    {
-        public function __construct()
-        {
-            $image1 = new RealSubject('image1');
-            $image2 = new RealSubject('image2');
-
-            $image1->displayImage();
-            $image1->displayImage();
-            $image1->displayImage();
-            $image2->displayImage();
-
-            echo "\n\n Same thing, using proxy";
-            $image1 = new ProxySubject('image1');
-            $image2 = new ProxySubject('image2');
-
-            $image1->displayImage();
-            $image1->displayImage();
-            $image1->displayImage();
-            $image2->displayImage();
-        }
-    }
-
-    $c = new Client();
-
 }

@@ -25,5 +25,4 @@ class RegistrationForm extends User {
 			array_push($rules,array('verifyCode', 'captcha', 'allowEmpty'=>!UserModule::doCaptcha('registration')));
 		return $rules;
 	}
-	
 }

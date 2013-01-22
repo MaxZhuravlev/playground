@@ -17,7 +17,7 @@ class UWjuidate {
 	public function init() {
 		return array(
 			'name'=>__CLASS__,
-			'label'=>UserModule::t('jQueryUI datepicker'),
+			'label'=>UserModule::t('jQueryUI '),
 			'fieldType'=>array('DATE','VARCHAR'),
 			'params'=>$this->params,
 			'paramsLabels' => array(
@@ -69,9 +69,9 @@ class UWjuidate {
 		
 		$language = $this->params['language'];
 		if ($language!='en') {
-			$js = "jQuery('#{$id}').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['{$language}'], {$options}));";
+			$js = "jQuery('#{$id}').(jQuery.extend({showMonthAfterYear:false}, jQuery..regional['{$language}'], {$options}));";
 			$cs->registerScriptFile($baseUrl.'/js/jquery-ui-i18n.min.js');
-		} else $js = "jQuery('#{$id}').datepicker({$options});";
+		} else $js = "jQuery('#{$id}').({$options});";
 
 		$cs->registerScript('ProfileFieldController'.'#'.$id, $js);
 		
